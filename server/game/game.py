@@ -1,8 +1,12 @@
 import time
+from Queue import Queue
 from player import Player
 
 class Game(object):
     players = []
+
+    def __init__(self):
+        self.in_messages = Queue()
 
     def on_client_connect(self, websocket):
         player = Player(websocket)
@@ -12,12 +16,8 @@ class Game(object):
     def on_client_disconnect(self, player):
         self.players.remove(player)
 
-    def send_messages(self, message):
-        for player in self.players:
-            player.websocket.send(message)
-
-    def receive_message(self, message):
-        self.send_messages(message['message_text'])
+    def on_message_received(self, message):
+        self.in_messages.put(message)
 
     def propogate_game_state(self):
         message = {
@@ -36,12 +36,15 @@ class Game(object):
         for player in self.players:
             player.send_message(message)
 
+    def send_to_all(self, message):
+        for player in self.players:
+            player.send_message(message)
+
     def main(self):
         max_frame_time = 0.25
         fixed_update_dt = 0.01
         accumulated_time = 0
         current_time = time.time()
-        propogations = 0
 
         while True:
             new_time = time.time()
@@ -57,8 +60,8 @@ class Game(object):
                 # update(fixed_update_dt)
 
             # render() aka, update clients
-            if propogations < 10 and self.players:
-                print 'send'
-                propogations += 1
-                self.propogate_game_state()
+            if not self.in_messages.empty():
+                while not self.in_messages.empty():
+                    m = self.in_messages.get()
+                    self.send_to_all(m)
 

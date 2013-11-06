@@ -24,6 +24,7 @@ class GameApp(object):
     def __call__(self, environ, start_response):
         websocket = environ['wsgi.websocket']
         player = self.game.on_client_connect(websocket)
+        player_id = player.id
 
         while True:
             recv_data = websocket.receive()
@@ -31,8 +32,9 @@ class GameApp(object):
             if recv_data is None:
                 break
 
-            message_obj = json.loads(recv_data)
-            self.game.receive_message(message_obj)
+            message_dict = json.loads(recv_data)
+            message_dict['player_id'] = player_id
+            self.game.on_message_received(message_dict)
 
         self.game.on_client_disconnect(player)
 

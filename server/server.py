@@ -6,17 +6,16 @@
 import json
 import random
 import threading
-# from game.player import Player
 
 from gevent import pywsgi, sleep
 from gevent.pool import Group
 from geventwebsocket.handler import WebSocketHandler
-from game.game import Game
+from game.bgame import BGame
 import json
 
 class GameApp(object):
     def __init__(self, *args, **kwargs):
-        self.game = Game()
+        self.game = BGame()
         self.game_thread = threading.Thread(target=self.game.main)
         self.game_thread.daemon = True
         self.game_thread.start()

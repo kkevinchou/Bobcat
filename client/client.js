@@ -1,7 +1,5 @@
 $(document).ready(function(){
-    var socket = new WebSocket("ws://192.168.64.140:8000/");
-
-
+    var socket = new WebSocket("ws://127.0.0.1:8000/");
 
     socket.onmessage = function(evt) {
         $('#events').append(evt.data + "\n");
@@ -34,11 +32,11 @@ function register_input(obj, socket) {
     keys_down = {}
 
     obj.keydown(function(event) {
-        var keypress_message = {
-            'type': 'keypress',
+        var action_message = {
+            'type': 'action',
+            'event': 'keydown',
+            'key': null
         }
-
-        keys_down[event.keyCode]
 
         var key = null;
 
@@ -52,16 +50,22 @@ function register_input(obj, socket) {
             key = 'RIGHT';
         }
 
-        if (key != null) {
-            keypress_message['key'] = key;
-            socket.send(JSON.stringify(keypress_message));
+        if (key != null && !keys_down[event.keyCode]) {
+            action_message['key'] = key;
+            socket.send(JSON.stringify(action_message));
         }
+
+        keys_down[event.keyCode] = true;
     })
 
     obj.keyup(function(event) {
-        var keypress_message = {
-            'type': 'keypress',
+        var action_message = {
+            'type': 'action',
+            'event': 'keyup',
+            'key': null
         }
+
+        delete keys_down[event.keyCode];
 
         var key = null;
 
@@ -76,8 +80,8 @@ function register_input(obj, socket) {
         }
 
         if (key != null) {
-            keypress_message['key'] = key;
-            socket.send(JSON.stringify(keypress_message));
+            action_message['key'] = key;
+            socket.send(JSON.stringify(action_message));
         }
     })
 }

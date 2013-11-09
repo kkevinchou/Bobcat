@@ -20,6 +20,20 @@ $(document).ready(function(){
     register_input($(this), socket);
 });
 
+function convert_keycode_to_key(key_code) {
+    if (key_code == KEY_UP || key_code == KEY_W) {
+        return 'UP';
+    } else if (key_code == KEY_DOWN || key_code == KEY_S) {
+        return 'DOWN';
+    } else if (key_code == KEY_LEFT || key_code == KEY_A) {
+        return 'LEFT';
+    }else if (key_code == KEY_RIGHT || key_code == KEY_D) {
+        return 'RIGHT';
+    } else {
+        return null;
+    }
+}
+
 function register_input(obj, socket) {
     KEY_UP = 38
     KEY_DOWN = 40
@@ -35,22 +49,11 @@ function register_input(obj, socket) {
     obj.keydown(function(event) {
         var action_message = {
             'type': 'action',
-            'event': 'keydown',
+            'event': 'key_down',
             'key': null
         }
 
-        var key = null;
-
-        if (event.keyCode == KEY_UP || event.keyCode == KEY_W) {
-            key = 'UP';
-        } else if (event.keyCode == KEY_DOWN || event.keyCode == KEY_S) {
-            key = 'DOWN';
-        } else if (event.keyCode == KEY_LEFT || event.keyCode == KEY_A) {
-            key = 'LEFT';
-        }else if (event.keyCode == KEY_RIGHT || event.keyCode == KEY_D) {
-            key = 'RIGHT';
-        }
-
+        var key = convert_keycode_to_key(event.keyCode);
         if (key != null && !keys_down[event.keyCode]) {
             action_message['key'] = key;
             socket.send(JSON.stringify(action_message));
@@ -62,23 +65,13 @@ function register_input(obj, socket) {
     obj.keyup(function(event) {
         var action_message = {
             'type': 'action',
-            'event': 'keyup',
+            'event': 'key_up',
             'key': null
         }
 
         delete keys_down[event.keyCode];
 
-        var key = null;
-
-        if (event.keyCode == KEY_UP || event.keyCode == KEY_W) {
-            key = 'UP';
-        } else if (event.keyCode == KEY_DOWN || event.keyCode == KEY_S) {
-            key = 'DOWN';
-        } else if (event.keyCode == KEY_LEFT || event.keyCode == KEY_A) {
-            key = 'LEFT';
-        }else if (event.keyCode == KEY_RIGHT || event.keyCode == KEY_D) {
-            key = 'RIGHT';
-        }
+        var key = convert_keycode_to_key(event.keyCode);
 
         if (key != null) {
             action_message['key'] = key;

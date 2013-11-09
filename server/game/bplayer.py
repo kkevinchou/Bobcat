@@ -1,4 +1,7 @@
 from lib.player import Player
 
 class BPlayer(Player):
-	pass
+    def __init__(self, *args, **kwargs):
+        super(BPlayer, self).__init__(*args, **kwargs)
+        self.x = 0
+        self.y = 0

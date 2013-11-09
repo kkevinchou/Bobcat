@@ -10,8 +10,6 @@ class Player(Client):
         self.socket = websocket
         self.id = self.id_generator
         self.id_generator += 1
-        self.x = 0
-        self.y = 0
 
     def __eq__(self, other):
         if isinstance(other, Player):

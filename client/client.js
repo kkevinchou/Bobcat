@@ -1,18 +1,19 @@
 $(document).ready(function(){
     var socket = new WebSocket("ws://127.0.0.1:8000/");
 
-    socket.onmessage = function(evt) {
-        $('#events').append(evt.data + "\n");
+    socket.onmessage = function(event) {
+        message_obj = $.parseJSON(event.data)
+        $('#events').append(JSON.stringify(message_obj, null, 4) + "\n");
         $('#events').scrollTop($('#events')[0].scrollHeight);
     }
 
-    socket.onopen = function(evt) {
+    socket.onopen = function(event) {
         $('#conn_status').html('<b>Connected</b>');
     }
-    socket.onerror = function(evt) {
+    socket.onerror = function(event) {
         $('#conn_status').html('<b>Error</b>');
     }
-    socket.onclose = function(evt) {
+    socket.onclose = function(event) {
         $('#conn_status').html('<b>Closed</b>');
     }
 

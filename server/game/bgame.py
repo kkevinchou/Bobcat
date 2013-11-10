@@ -30,7 +30,7 @@ class BGame(Game):
         pass
 
     def render(self):
-        current_time = get_current_time
+        current_time = get_current_time()
         if current_time - self.last_render_time > RENDER_TIME:
             self.last_render_time = current_time
             render_message = {

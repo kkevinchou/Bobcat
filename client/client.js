@@ -2,9 +2,8 @@ $(document).ready(function(){
     var socket = new WebSocket("ws://127.0.0.1:8000/");
 
     socket.onmessage = function(event) {
-        message_obj = $.parseJSON(event.data)
-        $('#events').append(JSON.stringify(message_obj, null, 4) + "\n");
-        $('#events').scrollTop($('#events')[0].scrollHeight);
+        message_obj = $.parseJSON(event.data);
+        handle_message(message_obj);
     }
 
     socket.onopen = function(event) {
@@ -19,6 +18,11 @@ $(document).ready(function(){
 
     register_input($(this), socket);
 });
+
+function handle_message(event) {
+    $('#events').append(JSON.stringify(message_obj, null, 4) + "\n");
+    $('#events').scrollTop($('#events')[0].scrollHeight);
+}
 
 function convert_keycode_to_key(key_code) {
     if (key_code == KEY_UP || key_code == KEY_W) {

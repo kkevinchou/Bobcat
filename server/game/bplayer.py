@@ -5,3 +5,4 @@ class BPlayer(Player):
         super(BPlayer, self).__init__(*args, **kwargs)
         self.x = 0
         self.y = 0
+    

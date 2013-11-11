@@ -3,6 +3,7 @@ from Queue import Queue
 from bplayer import BPlayer
 from lib.game import Game
 from lib.util import get_current_time
+from lib.navmesh.navmesh import Navmesh
 
 RENDER_TIME = 1000 # milliseconds
 

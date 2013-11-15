@@ -3,7 +3,7 @@ from Queue import PriorityQueue
 from heapq import heappush, heappop
 from util import distance_between
 
-class Navmesh(object):
+class AStarPlanner(object):
 	def __init__(self):
 		self.polygons = []
 		self.nodes = []
@@ -24,30 +24,38 @@ class Navmesh(object):
 				if node_a == node_b:
 					continue
 
-				if True or not intersects(node, polygons):
+				if True or not intersects(node_a, node_b, self.polygons):
 					node_a.neighbors.append(node_b)
 
 	def get_closest_node(self, node):
-		min_dist = distance_between(start_node, self.nodes[0])
+		min_dist = distance_between(node, self.nodes[0])
 		min_node = self.nodes[0]
 
-		for node in self.nodes:
-			dist = distance_between(start_node, node)
+		for current_node in self.nodes:
+			dist = distance_between(node, current_node)
 			if dist < min_dist:
 				min_dist = dist
 				min_node = node
 
-		closest_node = min_node
+		return min_node
+
+	def remove_node(self, node):
+		self.nodes.remove(node)
+
+	def add_node(self, node):
+		self.nodes.append(node)
 
 	def find_path(self, x1, y1, x2, y2):
-		self.compute_neighbours()
 
 		start_node = Node(x1, y1)
 		goal_node = Node(x2, y2)
 
+		self.add_node(goal_node)
+		self.compute_neighbours()
+
 		# check for direct los from start_node to goal_node
 
-		closest_node = get_closest_node(start_node)
+		closest_node = self.get_closest_node(start_node)
 
 		closed_set = set()
 		open_queue = []
@@ -86,6 +94,8 @@ class Navmesh(object):
 		while path_node in path_map:
 			path.append(path_node)
 			path_node = path_map[path_node]
+
+		print path
 
 		return path
 		

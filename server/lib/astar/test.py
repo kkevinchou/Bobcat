@@ -1,8 +1,8 @@
-from navmesh import Navmesh
+from astarplanner import AStarPlanner
 from polygon import Polygon
 from node import Node 
 
-navmesh = Navmesh()
+planner = AStarPlanner()
 
 poly1 = Polygon()
 poly1.add_point(0, 0)
@@ -16,7 +16,7 @@ poly2.add_point(100, 1)
 poly2.add_point(101, 1)
 poly2.add_point(101, 0)
 
-navmesh.add_polygon(poly1)
-navmesh.add_polygon(poly2)
+planner.add_polygon(poly1)
+planner.add_polygon(poly2)
 
-navmesh.find_path(0, 0, 1, 1)
+planner.find_path(0, 0, 1, 1)

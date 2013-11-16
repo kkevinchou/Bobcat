@@ -13,4 +13,4 @@ class Polygon(object):
 
 	def get_edges(self):
 		num_points = len(self.points)
-		[numpy.array(self.points[i], self.points[i + 1]) for i in range(num_points)]
+		return [[numpy.array(self.points[i]), numpy.array(self.points[(i + 1) % num_points])] for i in range(num_points)]

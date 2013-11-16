@@ -1,17 +1,34 @@
 from astarplanner import AStarPlanner
 from polygon import Polygon
-from node import Node 
 
 import numpy
-from util import _compute_t_value
+from util import intersect_single
 
-# planner = AStarPlanner()
+def basic_intersection_test():
+    poly = Polygon()
+    poly.add_point(0, 0)
+    poly.add_point(0, 1)
+    poly.add_point(-1, 1)
+    poly.add_point(-1, 0)
 
-# poly1 = Polygon()
-# poly1.add_point(0, 0)
-# poly1.add_point(0, 1)
-# poly1.add_point(1, 1)
-# poly1.add_point(1, 0)
+    line = [numpy.array([0, 0]), numpy.array([0, 1])]
+    assert(intersect_single(line, poly) == True)
+
+    line = [numpy.array([0, 1]), numpy.array([-1, 1])]
+    assert(intersect_single(line, poly) == True)
+
+    line = [numpy.array([-1, 1]), numpy.array([-1, 0])]
+    assert(intersect_single(line, poly) == True)
+
+    line = [numpy.array([-1, 0]), numpy.array([0, 0])]
+    assert(intersect_single(line, poly) == True)
+
+tests = [
+    basic_intersection_test,
+]
+
+for test in tests:
+    test()
 
 # poly2 = Polygon()
 # poly2.add_point(100, 0)
@@ -24,7 +41,11 @@ from util import _compute_t_value
 
 # planner.find_path(0, 0, 1, 1)
 
-a = [numpy.array([0, 0]), numpy.array([1, 1])]
-# b = [numpy.array([0, 1]), numpy.array([1, 2])]
-b = [numpy.array([1, 0]), numpy.array([0, 1])]
-print _compute_t_value(a, b)
+# b = [numpy.array([0, 0]), numpy.array([1, 1])]
+
+# c = numpy.array([0, 1])
+# d = numpy.array([1, 0])
+
+# print numpy.array_equal(c, d)
+# b = [numpy.array([0, 0]), numpy.array([1, 1])]
+# print _compute_t_value(a, b)

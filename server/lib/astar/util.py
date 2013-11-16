@@ -1,5 +1,12 @@
 import numpy
 
+def line_segment_equal(line_segment_a, line_segment_b):
+    return (
+        numpy.array_equal(line_segment_a[0], line_segment_b[0]) and numpy.array_equal(line_segment_a[1], line_segment_b[1])
+    ) or (
+        numpy.array_equal(line_segment_a[0], line_segment_b[1]) and numpy.array_equal(line_segment_a[1], line_segment_b[0])
+    )
+
 def create_line_segment(node_a, node_b):
     return [node_a.point(), node_b.point()]
 
@@ -9,16 +16,18 @@ def distance_between(node_a, node_b):
 
     return numpy.linalg.norm(point_a - point_b)
 
-def intersect(line_segment, polygons):
+def intersect_multi(line_segment, polygons):
     for polygon in polygons:
-        if _intersect(line_segment, polygons):
+        if intersect_single(line_segment, polygons):
             return True
     return False
 
-def _intersect(line_segment, polygon):
+def intersect_single(line_segment, polygon):
     for edge in polygon.get_edges():
         t_value = _compute_t_value(line_segment, edge)
         if t_value >= 0 and t_value <= 1:
+            return True
+        elif line_segment_equal(line_segment, edge):
             return True
 
     return False
@@ -31,9 +40,8 @@ def _compute_t_value(intersector, intersectee):
     B = intersector[1]
     P = intersectee[0]
 
-    print 'A: {}'.format(A)
-    print 'B: {}'.format(B)
-    print 'P: {}'.format(P)
-    print 'normal: {}'.format(normal)
+    denominator = (A - B).dot(normal)
+    if denominator == 0:
+        return None
 
-    return (A - P).dot(normal) / float((A - B).dot(normal))
+    return (A - P).dot(normal) / denominator

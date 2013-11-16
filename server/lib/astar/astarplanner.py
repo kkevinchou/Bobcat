@@ -1,7 +1,7 @@
 from node import Node
 from Queue import PriorityQueue
 from heapq import heappush, heappop
-from util import distance_between, intersect, create_line_segment
+from util import distance_between, intersect_multi, create_line_segment
 
 class AStarPlanner(object):
 	def __init__(self):
@@ -24,7 +24,7 @@ class AStarPlanner(object):
 				if node_a == node_b:
 					continue
 
-				if not intersect(create_line_segment(node_a, node_b), self.polygons):
+				if not intersect_multi(create_line_segment(node_a, node_b), self.polygons):
 					node_a.neighbors.append(node_b)
 
 	def get_closest_node(self, node):

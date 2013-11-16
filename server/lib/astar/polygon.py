@@ -1,4 +1,5 @@
 from node import Node
+import numpy
 
 class Polygon(object):
 	def __init__(self):
@@ -8,4 +9,8 @@ class Polygon(object):
 		return self.points
 
 	def add_point(self, x, y):
-		self.points.append(Node(x, y))
+		self.points.append([x, y])
+
+	def get_edges(self):
+		num_points = len(self.points)
+		[numpy.array(self.points[i], self.points[i + 1]) for i in range(num_points)]

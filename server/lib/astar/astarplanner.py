@@ -50,7 +50,6 @@ class AStarPlanner(object):
         self.nodes.append(node)
 
     def find_path(self, x1, y1, x2, y2):
-
         start_node = Node(x1, y1)
         goal_node = Node(x2, y2)
 
@@ -59,8 +58,8 @@ class AStarPlanner(object):
 
         # check for direct los from start_node to goal_node
 
-        # if not intersect_multi(create_line_segment(start_node, goal_node), self.polygons):
-        #     return [start_node, goal_node]
+        if not intersect_multi([start_node, goal_node], self.polygons):
+            return [start_node, goal_node]
 
         closest_node = self.get_closest_node(start_node)
 

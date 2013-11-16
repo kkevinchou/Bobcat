@@ -1,4 +1,3 @@
-from node import Node
 import numpy
 
 class Polygon(object):

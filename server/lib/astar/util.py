@@ -18,19 +18,23 @@ def distance_between(node_a, node_b):
 
 def intersect_multi(line_segment, polygons):
     for polygon in polygons:
-        if intersect_single(line_segment, polygons):
+        if intersect_single(line_segment, polygon):
             return True
     return False
 
 def intersect_single(line_segment, polygon):
     for edge in polygon.get_edges():
-        t_value = _compute_t_value(line_segment, edge)
-        if t_value >= 0 and t_value <= 1:
+        if line_intersect(line_segment, edge):
             return True
         elif line_segment_equal(line_segment, edge):
             return True
 
     return False
+
+def line_intersect(line_segment_a, line_segment_b):
+    t_value = _compute_t_value(line_segment_a, line_segment_b)
+    print t_value
+    return t_value >= 0 and t_value <= 1
 
 def _compute_t_value(intersector, intersectee):
     intersectee_dir = intersectee[1] - intersectee[0]

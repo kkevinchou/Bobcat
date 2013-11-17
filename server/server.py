@@ -15,7 +15,7 @@ import json
 
 class GameApp(object):
     def __init__(self, *args, **kwargs):
-        self.game = BGame()
+        self.game = BGame(60)
         self.game_thread = threading.Thread(target=self.game.main)
         self.game_thread.daemon = True
         self.game_thread.start()

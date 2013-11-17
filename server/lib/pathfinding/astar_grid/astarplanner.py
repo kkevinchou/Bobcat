@@ -1,14 +1,20 @@
 from node import Node
 from Queue import PriorityQueue
 from heapq import heappush, heappop
+import numpy
+
 from util import (
-    distance_between,
-    intersect_multi,
-    create_line_segment,
+    print_grid
 )
 
-class AStarPlanner(object):
-    def __init__(self):
+class AStarPlanner_Grid(object):
+    def __init__(self, width, height):
+        self.grid = []
+        for x in range(width):
+            self.grid.append([0 for y in range(height)])
+
+        self.grid[1][4] = 1
+
         self.polygons = []
         self.nodes = []
 
@@ -57,9 +63,8 @@ class AStarPlanner(object):
         self.compute_neighbours()
 
         # check for direct los from start_node to goal_node
-
-        if not intersect_multi([start_node, goal_node], self.polygons):
-            return [start_node, goal_node]
+        # if not intersect_multi([start_node, goal_node], self.polygons):
+        #     return [start_node, goal_node]
 
         closest_node = self.get_closest_node(start_node)
 

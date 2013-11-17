@@ -3,15 +3,15 @@ from Queue import Queue
 from bplayer import BPlayer
 from lib.game import Game
 from lib.util import get_current_time
-from lib.astar.astarplanner import AStarPlanner
 
 RENDER_TIME = 1000 # milliseconds
 
 class BGame(Game):
-    def __init__(self):
+    def __init__(self, fps):
+        super(BGame, self).__init__(fps)
+
         self.in_messages = Queue()
         self.players = {}
-        self.last_render_time = 0
 
     def on_client_connect(self, websocket):
         player = BPlayer(websocket)
@@ -31,11 +31,4 @@ class BGame(Game):
         pass
 
     def render(self):
-        current_time = get_current_time()
-        if current_time - self.last_render_time > RENDER_TIME:
-            self.last_render_time = current_time
-            render_message = {
-                'render': 'render!'
-            }
-            # for player in self.players.values():
-            #     player.send_message(render_message)
+        pass

@@ -2,7 +2,6 @@ import time
 from Queue import Queue
 from bplayer import BPlayer
 from lib.game import Game
-from lib.util import get_current_time
 
 RENDER_TIME = 1000 # milliseconds
 
@@ -22,7 +21,7 @@ class BGame(Game):
     	self.players.pop(player.id, None)
 
     def on_message_received(self, message):
-        message['timestamp'] = get_current_time()
+        message['timestamp'] = time.time()
     	player_id = message['player_id']
     	self.players[player_id].send_message(message)
         self.in_messages.put(message)

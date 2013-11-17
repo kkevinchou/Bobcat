@@ -1,6 +1,5 @@
 import time
 from Queue import Queue
-from util import get_current_time
 
 class Game(object):
     def __init__(self, fps):

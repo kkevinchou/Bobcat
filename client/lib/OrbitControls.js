@@ -292,43 +292,44 @@ THREE.OrbitControls = function ( object, domElement ) {
 		pan.set(0,0,0);
 
 
+		if (timeDelta > 0) {
+			var panSpeed = scope.keyPanSpeed * (timeDelta/16);
+			for (var key in scope.keysPressed ) {
+				if (scope.keysPressed.hasOwnProperty(key)) {
+		    
+					switch ( parseInt(key) ) {
+
+						case scope.keys.UP:
+							scope.panForward( panSpeed );
+
+							//scope.pan( new THREE.Vector3( 0, scope.keyPanSpeed,0 ) );
+							break;
+						case scope.keys.BOTTOM:
+							scope.panForward( -panSpeed);
 
 
-		for (var key in scope.keysPressed ) {
-			if (scope.keysPressed.hasOwnProperty(key)) {
-	    
-				switch ( parseInt(key) ) {
-
-					case scope.keys.UP:
-						scope.panForward( scope.keyPanSpeed);
-
-						//scope.pan( new THREE.Vector3( 0, scope.keyPanSpeed,0 ) );
-						break;
-					case scope.keys.BOTTOM:
-						scope.panForward( -scope.keyPanSpeed);
+							break;
+						case scope.keys.LEFT:
+							scope.panLeft( panSpeed);
 
 
-						break;
-					case scope.keys.LEFT:
-						scope.panLeft( scope.keyPanSpeed);
+							break;
+						case scope.keys.RIGHT:
+							scope.panLeft( -panSpeed);
 
 
-						break;
-					case scope.keys.RIGHT:
-						scope.panLeft( -scope.keyPanSpeed);
+							break;
+						case scope.keys.SPACE:
+							scope.panGlobalY( -panSpeed);
 
+							break;
+					}
 
-						break;
-					case scope.keys.SPACE:
-						scope.panGlobalY( -scope.keyPanSpeed);
+				}		
+			}
 
-						break;
-				}
-
-			}		
+			this.target.add( pan );
 		}
-
-		this.target.add( pan );
 
 		offset.x = radius * Math.sin( phi ) * Math.sin( theta );
 		offset.y = radius * Math.cos( phi );

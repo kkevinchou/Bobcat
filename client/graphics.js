@@ -95,9 +95,11 @@ function animate() {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
 
-    controls.update(Date.now() - time);
+    var now = Date.now();
+   // console.log (now + " " + time);
+    controls.update(now - time);
 
-    time = Date.now();
+    time = now;
 
     render();
 

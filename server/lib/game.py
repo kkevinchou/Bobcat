@@ -32,9 +32,10 @@ class Game(object):
         while True:
             new_time = time.time()
             frame_time = new_time - current_time
+            current_time = new_time
+
             if frame_time >= max_frame_time:
                 frame_time = max_frame_time
-            current_time = time.time()
 
             accumulated_time += frame_time
 
@@ -42,7 +43,6 @@ class Game(object):
                 accumulated_time -= fixed_update_dt
                 self.update(fixed_update_dt)
 
-            current_time = get_current_time()
             if current_time - last_render_time > sec_per_render:
                 last_render_time = current_time
                 self.render()

@@ -31,4 +31,5 @@ class BGame(Game):
         pass
 
     def render(self):
+        # print 'render'
         pass

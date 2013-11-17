@@ -513,6 +513,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		if ( scope.noKeys === true ) { return; }
 		if ( scope.noPan === true ) { return; }
 
+		if (state === STATE.pan) { return; }
 		// pan a pixel - I guess for precise positioning?
 		// Greggman fix: https://github.com/greggman/three.js/commit/fde9f9917d6d8381f06bf22cdff766029d1761be
 		scope.keysPressed[event.keyCode] = true;

@@ -10,15 +10,38 @@ $(document).ready(function(){
     animate();
 });
 
+function setupGround(scene) {
+    var geometry = new THREE.PlaneGeometry( 100, 100 );
+    var planeMaterial = new THREE.MeshPhongMaterial( { color: 0xffdd99 } );
+   // planeMaterial.ambient = planeMaterial.color;
+
+    var ground = new THREE.Mesh( geometry, planeMaterial );
+
+    ground.position.set( 0, 0, 0 );
+    ground.rotation.x = - Math.PI / 2;
+    ground.scale.set( 100, 100, 100 );
+
+    ground.castShadow = false;
+    ground.receiveShadow = true;
+
+    scene.add( ground );
+}
 function init() {
     var canvas = document.getElementById("canvas");
     var canvasWidth = canvas.width;
     var canvasHeight = canvas.height;
+
     camera = new THREE.PerspectiveCamera( 75, canvasWidth/canvasHeight, 1, 10000 );
     camera.position.set(0,500,100);
     //camera.rotation.set(0,0,0);
-//camera.lookAt(new THREE.Vector3(0,0,0));
+    //camera.lookAt(new THREE.Vector3(0,0,0));
+
     scene = new THREE.Scene();
+
+    renderer = new THREE.WebGLRenderer({canvas: canvas, antialias:true});
+    renderer.shadowMapEnabled = true;
+
+    setupGround(scene);
 
     geometry = new THREE.CubeGeometry( 100, 200, 200 );
     material = new THREE.MeshLambertMaterial( { color: 0xff0000} );
@@ -29,8 +52,7 @@ function init() {
     mesh.receiveShadow = true;
     scene.add( mesh );
 
-    renderer = new THREE.WebGLRenderer({canvas: canvas, antialias:true});
-    renderer.shadowMapEnabled = true;
+
     // set up the sphere vars
     var radius = 50,
         segments = 30,
@@ -39,21 +61,10 @@ function init() {
     // create a new mesh with
     // sphere geometry - we will cover
     // the sphereMaterial next!
-    var sphereMaterial =
-  new THREE.MeshLambertMaterial(
-    {
-      color: 0x00CC00
-    });
+    var sphereMaterial = new THREE.MeshLambertMaterial( { color: 0x00CC00 });
 
-    var sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(
-        radius,
-        segments,
-        rings),
-        sphereMaterial);
+    var sphere = new THREE.Mesh( new THREE.SphereGeometry( radius, segments, rings), sphereMaterial);
     sphere.castShadow = true;
-
-    // add the sphere to the scene
     scene.add(sphere);
 
     sphere.position.x = 0;
@@ -72,14 +83,7 @@ function init() {
     // add to the scene
    // scene.add(pointLight);
 
-    var landgeometry = new THREE.CubeGeometry( 5000, 100, 5000 );
-    var landmaterial = new THREE.MeshLambertMaterial( { color: 0xCCCCCC} );
-    land = new THREE.Mesh(landgeometry, landmaterial);
-    land.position.set(0,-50,-2500);
-    land.receiveShadow = true;
-    scene.add(land);
-
-    //var hemLight = new THREE.HemisphereLight(0x0000FF, 0x00FF00, 0.5);
+   // var hemLight = new THREE.HemisphereLight(0x0000FF, 0x00FF00, 0.5);
    //scene.add(hemLight);
 
    // var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
@@ -134,25 +138,15 @@ function animate() {
     }
 
     var now = Date.now();
-   // console.log (now + " " + time);
     controls.update(now - time);
 
     time = now;
-
     render();
-
-
-    //console.log(camera.position);
-
-
 }
-
 
 function render() {
     renderer.render( scene, camera );
-
 }
-
 
 function createMeshFromFile(filename, objectID) {
     var loader = new THREE.JSONLoader();
@@ -168,5 +162,4 @@ function createMeshFromFile(filename, objectID) {
       scene.add(filemesh);
       objects[objectID] = filemesh;
     });
-
 }

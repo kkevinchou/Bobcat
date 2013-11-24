@@ -1,25 +1,25 @@
 import time
 from Queue import Queue
-from bplayer import BPlayer
-from lib.game import Game
+from player import Player
+from lib.game import Game as BaseGame
 
 from panda import Application
 
-class BGame(Game):
+class Game(BaseGame):
     def __init__(self, fps):
-        super(BGame, self).__init__(fps)
+        super(Game, self).__init__(fps)
 
         self.in_messages = Queue()
         self.players = {}
-        self.a = Application()
+        # self.a = Application()
 
     def on_client_connect(self, websocket):
-        player = BPlayer(websocket)
+        player = Player(websocket)
         self.players[player.id] = player
-        return player
+        return player.id
 
-    def on_client_disconnect(self, player):
-    	self.players.pop(player.id, None)
+    def on_client_disconnect(self, player_id):
+    	self.players.pop(player_id, None)
 
     def on_message_received(self, message):
         message['timestamp'] = time.time()
@@ -28,7 +28,7 @@ class BGame(Game):
         self.in_messages.put(message)
 
     def update(self, delta):
-        self.a.taskMgr.step()
+        # self.a.taskMgr.step()
         pass
 
     def render(self):

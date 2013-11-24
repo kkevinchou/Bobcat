@@ -20,7 +20,7 @@ class Game(object):
     def render(self):
         raise NotImplementedError()
 
-    def main(self):
+    def start(self):
         max_frame_time = 0.25
         fixed_update_dt = 0.01
         accumulated_time = 0

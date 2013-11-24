@@ -3,39 +3,25 @@
 # sys.path.append(os.getcwd())
 # print sys.path
 
-import json
-import random
 import threading
+from game.game  import Game
+from lib.network.receiver import Receiver
 
-from gevent import pywsgi, sleep
-from gevent.pool import Group
-from geventwebsocket.handler import WebSocketHandler
-from game.bgame import BGame
-import json
+class Server(object):
+    def __init__(self):
+        self.game = Game(60)
+        self.receiver = Receiver(self.game)
+        self.receiver_thread = threading.Thread(target=self.receiver.start)
+        self.receiver_thread.daemon = True
 
-class GameApp(object):
-    def __init__(self, *args, **kwargs):
-        self.game = BGame(60)
-        self.game_thread = threading.Thread(target=self.game.main)
-        self.game_thread.daemon = True
-        self.game_thread.start()
+    def start(self):
+        print '[SERVER] Starting...'
+        self.receiver_thread.start()
+        self.game.start()
 
-    def __call__(self, environ, start_response):
-        websocket = environ['wsgi.websocket']
-        player = self.game.on_client_connect(websocket)
-        player_id = player.id
+    def test_func(self):
+        print 'TEST FUNC'
 
-        while True:
-            recv_data = websocket.receive()
-
-            if recv_data is None:
-                break
-
-            message_dict = json.loads(recv_data)
-            message_dict['player_id'] = player_id
-            self.game.on_message_received(message_dict)
-
-        self.game.on_client_disconnect(player)
-
-server = pywsgi.WSGIServer(("", 8000), GameApp(), handler_class=WebSocketHandler)
-server.serve_forever()
+if __name__ == "__main__":
+    server = Server()
+    server.start()

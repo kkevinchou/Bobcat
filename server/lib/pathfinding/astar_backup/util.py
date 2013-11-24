@@ -33,7 +33,6 @@ def intersect_single(line_segment, polygon):
 
 def line_intersect(line_segment_a, line_segment_b):
     t_value = _compute_t_value(line_segment_a, line_segment_b)
-    print t_value
     return t_value >= 0 and t_value <= 1
 
 def _compute_t_value(intersector, intersectee):

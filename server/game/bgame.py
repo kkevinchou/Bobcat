@@ -1,20 +1,20 @@
 import time
 from Queue import Queue
-from bplayer import BPlayer
-from lib.game import Game
+from player import Player
+from lib.game import Game as BaseGame
 
 from panda import Application
 
-class BGame(Game):
+class Game(BaseGame):
     def __init__(self, fps):
-        super(BGame, self).__init__(fps)
+        super(Game, self).__init__(fps)
 
         self.in_messages = Queue()
         self.players = {}
         self.a = Application()
 
     def on_client_connect(self, websocket):
-        player = BPlayer(websocket)
+        player = Player(websocket)
         self.players[player.id] = player
         return player
 

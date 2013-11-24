@@ -57,6 +57,8 @@ function register_input(obj, socket) {
             'key': null
         }
 
+        console.log(event.keyCode);
+
         var key = convert_keycode_to_key(event.keyCode);
         if (key != null && !keys_down[event.keyCode]) {
             action_message['key'] = key;

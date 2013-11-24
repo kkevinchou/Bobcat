@@ -10,12 +10,12 @@ import threading
 from gevent import pywsgi, sleep
 from gevent.pool import Group
 from geventwebsocket.handler import WebSocketHandler
-from game.bgame import BGame
+from game.game import Game
 import json
 
 class GameApp(object):
     def __init__(self, *args, **kwargs):
-        self.game = BGame(60)
+        self.game = Game(60)
         self.game_thread = threading.Thread(target=self.game.main)
         self.game_thread.daemon = True
         self.game_thread.start()

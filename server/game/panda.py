@@ -1,6 +1,5 @@
-# from pandac.PandaModules import * 
-# ConfigVariableManager.getGlobalPtr().listVariables()
-# ConfigVariableString("window-type","none").setValue("none") 
+from pandac.PandaModules import * 
+ConfigVariableString("window-type","none").setValue("none") 
 
 from direct.directtools.DirectGeometry import LineNodePath
 
@@ -67,8 +66,6 @@ class Application(ShowBase):
         geom2 = entry.getGeom2()
         body1 = entry.getBody1()
         body2 = entry.getBody2()
-
-        print body1, body2
 
     def add_ground(self):
         cm = CardMaker("ground")

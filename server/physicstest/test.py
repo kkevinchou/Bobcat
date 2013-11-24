@@ -68,8 +68,6 @@ class Application(ShowBase):
         body1 = entry.getBody1()
         body2 = entry.getBody2()
 
-        print body1, body2
-
     def add_ground(self):
         cm = CardMaker("ground")
         cm.setFrame(-1, 1, -1, 1)

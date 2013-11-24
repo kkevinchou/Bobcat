@@ -1,78 +1,134 @@
 from direct.directtools.DirectGeometry import LineNodePath
-from panda3d.core import *
-from panda3d.ode import *
+
+from panda3d.core import (
+    Vec3,
+    Vec4,
+    CardMaker,
+    Quat
+
+)
+
+from panda3d.ode import (
+    OdeWorld,
+    OdeSimpleSpace,
+    OdeJointGroup,
+    OdeBoxGeom,
+    OdePlaneGeom,
+    OdeBody,
+    OdeMass,
+    OdeSphereGeom
+
+)
+
 from direct.showbase.ShowBase import ShowBase
 import sys
 
 class Application(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
-        self.lines = LineNodePath(parent = render, thickness = 3.0, colorVec = Vec4(1, 0, 0, 1))
+        self.smiley = loader.loadModel("smiley")
+        self.cam.set_pos(0, -50, 25)
 
-        # Load the self.smiley and self.frowney models
-        self.smiley = loader.loadModel("smiley.egg")
-        self.smiley.reparentTo(render)
-        self.smiley.setPos(-5, 0, -5)
-        self.frowney = loader.loadModel("frowney.egg")
-        self.frowney.reparentTo(render)
-        self.frowney.setPos(-12.5, 0, -7.5)
-         
+        self.setup_ODE()
+        self.add_ground()
+        self.add_static_box(1, 1, 1)
+        self.s1 = self.add_smiley(0, 0, 50)
+        self.s2 = self.add_smiley(0, 0, 40)
+
+        self.accept("escape", sys.exit)
+        self.accept('a', self.velocity)
+        taskMgr.add(self.update_ODE, "update_ODE")
+
+    def velocity(self):
+        self.s2.set_linear_vel(0, 0, 10)
+
+    def setup_ODE(self):
         # Setup our physics self.world
         self.world = OdeWorld()
         self.world.setGravity(0, 0, -9.81)
-         
-        # Setup the body for the self.smiley
-        self.smileyBody = OdeBody(self.world)
-        M = OdeMass()
-        M.setSphere(5000, 1.0)
-        self.smileyBody.setMass(M)
-        self.smileyBody.setPosition(self.smiley.getPos(render))
-        self.smileyBody.setQuaternion(self.smiley.getQuat(render))
-         
-        # Now, the body for the self.frowney
-        self.frowneyBody = OdeBody(self.world)
-        M = OdeMass()
-        M.setSphere(5000, 1.0)
-        self.frowneyBody.setMass(M)
-        self.frowneyBody.setPosition(self.frowney.getPos(render))
-        self.frowneyBody.setQuaternion(self.frowney.getQuat(render))
-         
-        # Create the joints
-        smileyJoint = OdeBallJoint(self.world)
-        smileyJoint.attach(self.smileyBody, None) # Attach it to the environment
-        smileyJoint.setAnchor(0, 0, 0)
-        frowneyJoint = OdeBallJoint(self.world)
-        frowneyJoint.attach(self.smileyBody, self.frowneyBody)
-        frowneyJoint.setAnchor(-5, 0, -5)
-         
-        # Set the camera position
-        base.disableMouse()
-        base.camera.setPos(0, 50, -7.5)
-        base.camera.lookAt(0, 0, -7.5)
+        self.world.initSurfaceTable(1)
+        self.world.setSurfaceEntry(0, 0, 200, 0.7, 0.2, 0.9, 0.00001, 0.0, 0.002)
 
-        self.accept("escape", sys.exit)
+        self.space = OdeSimpleSpace()
+        self.space.setAutoCollideWorld(self.world)
+        self.contacts = OdeJointGroup()
+        self.space.setAutoCollideJointGroup(self.contacts)
 
-        taskMgr.doMethodLater(0.5, self.simulationTask, "Physics Simulation")
+    def add_ground(self):
+        cm = CardMaker("ground")
+        cm.setFrame(-1, 1, -1, 1)
+        ground = render.attachNewNode(cm.generate())
+        ground.setColor(0.5, 0.7, 0.8)
+        ground.lookAt(0, 0, -1)
+        groundGeom = OdePlaneGeom(self.space, Vec4(0, 0, 1, 0))
 
-    def drawLines(self):
-        # Draws lines between the self.smiley and self.frowney.
-        self.lines.reset()
-        self.lines.drawLines([((self.frowney.getX(), self.frowney.getY(), self.frowney.getZ()),
-                        (self.smiley.getX(), self.smiley.getY(), self.smiley.getZ())),
-                       ((self.smiley.getX(), self.smiley.getY(), self.smiley.getZ()),
-                        (0, 0, 0))])
-        self.lines.create()
+    def add_smiley(self, x, y, z):
+        sm = render.attachNewNode("smiley-instance")
+        sm.setPos(x, y, z)
+        self.smiley.instanceTo(sm)
 
-    # The task for our simulation
-    def simulationTask(self, task):
-        # Step the simulation and set the new positions
-        # self.drawLines()
+        body = OdeBody(self.world)
+        mass = OdeMass()
+        mass.setSphereTotal(10, 1)
+        body.setMass(mass)
+        body.setPosition(sm.getPos())
+        geom = OdeSphereGeom(self.space, 1)
+        geom.setBody(body)
+
+        sm.setPythonTag("body", body)
+
+        return body
+
+    def add_static_box(self, x, y, z):
+        self.box = OdeBoxGeom(self.space, Vec3(x, y, z))
+        self.box.set_position(0, 0, 25)
+
+    def draw_box(self, box):
+        line_collection = LineNodePath(parent=render, thickness=1.0, colorVec=Vec4(1, 0, 0, 1))
+        pos = box.get_position()
+        lengths = box.get_lengths()
+
+        x = pos[0]
+        y = pos[1]
+        z = pos[2]
+
+        half_width = lengths[0]
+        half_length = lengths[1]
+        half_height = lengths[2]
+
+        lines = [
+            # Bottom Face
+            ((x - half_width, y - half_length, z - half_height), (x + half_width, y - half_length, z - half_height)),
+            ((x + half_width, y - half_length, z - half_height), (x + half_width, y + half_length, z - half_height)),
+            ((x + half_width, y + half_length, z - half_height), (x - half_width, y + half_length, z - half_height)),
+            ((x - half_width, y + half_length, z - half_height), (x - half_width, y - half_length, z - half_height)),
+            # Top Face
+            ((x - half_width, y - half_length, z + half_height), (x + half_width, y - half_length, z + half_height)),
+            ((x + half_width, y - half_length, z + half_height), (x + half_width, y + half_length, z + half_height)),
+            ((x + half_width, y + half_length, z + half_height), (x - half_width, y + half_length, z + half_height)),
+            ((x - half_width, y + half_length, z + half_height), (x - half_width, y - half_length, z + half_height)),
+            # Vertical Lines
+            ((x - half_width, y - half_length, z - half_height), (x - half_width, y - half_length, z + half_height)),
+            ((x + half_width, y - half_length, z - half_height), (x + half_width, y - half_length, z + half_height)),
+            ((x + half_width, y + half_length, z - half_height), (x + half_width, y + half_length, z + half_height)),
+            ((x - half_width, y + half_length, z - half_height), (x - half_width, y + half_length, z + half_height)),
+        ]
+
+        line_collection.drawLines(lines)
+        line_collection.create()
+
+    def update_ODE(self, task):
+        self.space.autoCollide()
         self.world.quickStep(globalClock.getDt())
-        self.frowney.setPosQuat(render, self.frowneyBody.getPosition(), Quat(self.frowneyBody.getQuaternion()))
-        self.smiley.setPosQuat(render, self.smileyBody.getPosition(), Quat(self.smileyBody.getQuaternion()))
-        self.drawLines()
+
+        self.draw_box(self.box)
+
+        for smiley in render.findAllMatches("smiley-instance"):
+            body = smiley.getPythonTag("body")
+            smiley.setPosQuat(body.getPosition(), Quat(body.getQuaternion()))
+
+        self.contacts.empty()
         return task.cont
 
 app = Application()
-app.drawLines()
 app.run()

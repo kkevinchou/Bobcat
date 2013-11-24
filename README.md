@@ -8,7 +8,7 @@ Traceback (most recent call last):
     self.__target(*self.__args, **self.__kwargs)
   File "/home/kevin/workspace/Bobcat/server/lib/game.py", line 43, in main
     self.update(fixed_update_dt)
-  File "/home/kevin/workspace/Bobcat/server/game/bgame.py", line 31, in update
+  File "/home/kevin/workspace/Bobcat/server/game/game.py", line 31, in update
     self.a.taskMgr.step()
   File "/usr/share/panda3d/direct/task/Task.py", line 456, in step
     signal.signal(signal.SIGINT, self.keyboardInterruptHandler)

@@ -1,5 +1,4 @@
-# from pandac.PandaModules import * 
-# ConfigVariableString("window-type","none").setValue("none") 
+# from pandac.Pand`ring("window-type","none").setValue("none") 
 
 from direct.directtools.DirectGeometry import LineNodePath
 

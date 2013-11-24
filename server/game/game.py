@@ -16,10 +16,10 @@ class Game(BaseGame):
     def on_client_connect(self, websocket):
         player = Player(websocket)
         self.players[player.id] = player
-        return player
+        return player.id
 
-    def on_client_disconnect(self, player):
-    	self.players.pop(player.id, None)
+    def on_client_disconnect(self, player_id):
+    	self.players.pop(player_id, None)
 
     def on_message_received(self, message):
         message['timestamp'] = time.time()

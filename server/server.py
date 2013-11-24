@@ -22,8 +22,7 @@ class GameApp(object):
 
     def __call__(self, environ, start_response):
         websocket = environ['wsgi.websocket']
-        player = self.game.on_client_connect(websocket)
-        player_id = player.id
+        player_id = self.game.on_client_connect(websocket)
 
         while True:
             recv_data = websocket.receive()
@@ -35,7 +34,7 @@ class GameApp(object):
             message_dict['player_id'] = player_id
             self.game.on_message_received(message_dict)
 
-        self.game.on_client_disconnect(player)
+        self.game.on_client_disconnect(player_id)
 
 server = pywsgi.WSGIServer(("", 8000), GameApp(), handler_class=WebSocketHandler)
 server.serve_forever()

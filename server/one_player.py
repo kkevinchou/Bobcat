@@ -1,4 +1,4 @@
-from game.bgame import BGame
+from game.game import Game
 
-a = BGame(60)
+a = Game(60)
 a.main()

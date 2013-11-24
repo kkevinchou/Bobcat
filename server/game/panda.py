@@ -1,5 +1,5 @@
-from pandac.PandaModules import * 
-ConfigVariableString("window-type","none").setValue("none") 
+# from pandac.PandaModules import * 
+# ConfigVariableString("window-type","none").setValue("none") 
 
 from direct.directtools.DirectGeometry import LineNodePath
 
@@ -31,7 +31,7 @@ class Application(ShowBase):
         ShowBase.__init__(self)
         self.smiley = loader.loadModel("smiley")
         self.smiley.set_scale(1)
-        # self.cam.set_pos(0, -50, 25)
+        self.cam.set_pos(0, -50, 25)
 
         self.setup_ODE()
         self.add_ground()

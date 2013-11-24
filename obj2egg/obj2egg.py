@@ -523,6 +523,7 @@ def main(argv=None):
         elif o in ("-s", "--show"):
             show = True
     for infile in args:
+        print infile
         try:
             if ".obj" not in infile:
                 print "WARNING", finfile, "does not look like a valid obj file"

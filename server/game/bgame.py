@@ -3,7 +3,7 @@ from Queue import Queue
 from bplayer import BPlayer
 from lib.game import Game
 
-RENDER_TIME = 1000 # milliseconds
+from panda import Application
 
 class BGame(Game):
     def __init__(self, fps):
@@ -11,6 +11,7 @@ class BGame(Game):
 
         self.in_messages = Queue()
         self.players = {}
+        self.a = Application()
 
     def on_client_connect(self, websocket):
         player = BPlayer(websocket)
@@ -27,6 +28,7 @@ class BGame(Game):
         self.in_messages.put(message)
 
     def update(self, delta):
+        self.a.taskMgr.step()
         pass
 
     def render(self):

@@ -1,6 +1,6 @@
 # from pandac.PandaModules import * 
 # ConfigVariableManager.getGlobalPtr().listVariables()
-# ConfigVariableString("window-type","onscreen").setValue("onscreen") 
+# ConfigVariableString("window-type","none").setValue("none") 
 
 from direct.directtools.DirectGeometry import LineNodePath
 
@@ -30,9 +30,9 @@ import sys
 class Application(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
-        self.smiley = loader.loadModel("standard_sphere")
+        self.smiley = loader.loadModel("smiley")
         self.smiley.set_scale(1)
-        self.cam.set_pos(0, -50, 25)
+        # self.cam.set_pos(0, -50, 25)
 
         self.setup_ODE()
         self.add_ground()
@@ -145,6 +145,3 @@ class Application(ShowBase):
 
         self.contacts.empty()
         return task.cont
-
-app = Application()
-app.run()

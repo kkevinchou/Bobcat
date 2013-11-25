@@ -25,7 +25,7 @@ from panda3d.ode import (
 from direct.showbase.ShowBase import ShowBase
 import sys
 
-class Application(ShowBase):
+class PhysicsSimulator(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         self.smiley = loader.loadModel("smiley")
@@ -44,11 +44,10 @@ class Application(ShowBase):
         self.accept('on_collision', self.on_collision)
 
     def velocity(self):
-        taskMgr.popupControls()
         self.s2.set_linear_vel(0, 0, 10)
 
     def setup_ODE(self):
-        # Setup our physics self.world
+        # Setup our physics world
         self.world = OdeWorld()
         self.world.setGravity(0, 0, -9.81)
         self.world.initSurfaceTable(1)

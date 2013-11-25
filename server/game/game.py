@@ -3,7 +3,7 @@ from Queue import Queue
 from player import Player
 from lib.game import Game as BaseGame
 
-from panda import Application
+from physics_simulator import PhysicsSimulator
 
 class Game(BaseGame):
     def __init__(self, fps):
@@ -11,7 +11,7 @@ class Game(BaseGame):
 
         self.in_messages = Queue()
         self.players = {}
-        self.a = Application()
+        self.phys_simulator = PhysicsSimulator()
 
     def on_client_connect(self, websocket):
         player = Player(websocket)
@@ -28,7 +28,7 @@ class Game(BaseGame):
         self.in_messages.put(message)
 
     def update(self, delta):
-        self.a.taskMgr.step()
+        self.phys_simulator.taskMgr.step()
         pass
 
     def render(self):
